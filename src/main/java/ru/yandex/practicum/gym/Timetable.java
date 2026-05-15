@@ -8,7 +8,6 @@ public class Timetable {
 
     public Timetable() {
         schedule = new HashMap<>();
-        // Инициализируем структуру для всех дней недели
         for (DayOfWeek day : DayOfWeek.values()) {
             schedule.put(day, new HashMap<>());
             for (TimeOfDay time : TimeOfDay.values()) {
@@ -20,7 +19,6 @@ public class Timetable {
     public void addNewTrainingSession(TrainingSession trainingSession) {
         DayOfWeek day = trainingSession.getDayOfWeek();
         TimeOfDay time = trainingSession.getTimeOfDay();
-
         if (schedule.containsKey(day) && schedule.get(day).containsKey(time)) {
             schedule.get(day).get(time).add(trainingSession);
         }
