@@ -16,7 +16,7 @@ public class Timetable {
     public void addNewTrainingSession(TrainingSession trainingSession) {
         DayOfWeek day = trainingSession.getDayOfWeek();
         TimeOfDay time = trainingSession.getTimeOfDay();
-        
+
         if (!schedule.containsKey(day)) {
             schedule.put(day, new HashMap<>());
         }
