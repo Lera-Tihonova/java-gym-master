@@ -10,25 +10,27 @@ public class Timetable {
         schedule = new HashMap<>();
         for (DayOfWeek day : DayOfWeek.values()) {
             schedule.put(day, new HashMap<>());
-            for (TimeOfDay time : TimeOfDay.values()) {
-                schedule.get(day).put(time, new ArrayList<>());
-            }
         }
     }
 
     public void addNewTrainingSession(TrainingSession trainingSession) {
         DayOfWeek day = trainingSession.getDayOfWeek();
         TimeOfDay time = trainingSession.getTimeOfDay();
-        if (schedule.containsKey(day) && schedule.get(day).containsKey(time)) {
-            schedule.get(day).get(time).add(trainingSession);
+        
+        if (!schedule.containsKey(day)) {
+            schedule.put(day, new HashMap<>());
         }
+        if (!schedule.get(day).containsKey(time)) {
+            schedule.get(day).put(time, new ArrayList<>());
+        }
+        schedule.get(day).get(time).add(trainingSession);
     }
 
     public List<TrainingSession> getTrainingSessionsForDay(DayOfWeek dayOfWeek) {
         List<TrainingSession> result = new ArrayList<>();
         if (schedule.containsKey(dayOfWeek)) {
-            for (TimeOfDay time : TimeOfDay.values()) {
-                result.addAll(schedule.get(dayOfWeek).get(time));
+            for (List<TrainingSession> sessions : schedule.get(dayOfWeek).values()) {
+                result.addAll(sessions);
             }
         }
         return result;
