@@ -1,57 +1,74 @@
 package ru.yandex.practicum.gym;
 
-import ru.yandex.practicum.gym.model.*;
 import java.util.*;
 
 public class Timetable {
-    private final Map<DayOfWeek, TreeMap<TimeOfDay, List<TrainingSession>>> schedule = new HashMap<>();
+
+    private Map<DayOfWeek, Map<TimeOfDay, List<TrainingSession>>> schedule;
+
+    public Timetable() {
+        schedule = new TreeMap<>();
+        for (DayOfWeek day : DayOfWeek.values()) {
+            schedule.put(day, new TreeMap<>());
+        }
+    }
 
     public void addNewTrainingSession(TrainingSession trainingSession) {
+        if (trainingSession == null) {
+            return;
+        }
         DayOfWeek day = trainingSession.getDayOfWeek();
         TimeOfDay time = trainingSession.getTimeOfDay();
 
-        TreeMap<TimeOfDay, List<TrainingSession>> dayMap =
-                schedule.computeIfAbsent(day, k -> new TreeMap<>());
-
-        List<TrainingSession> sessions =
-                dayMap.computeIfAbsent(time, k -> new ArrayList<>());
-
-        sessions.add(trainingSession);
+        if (!schedule.containsKey(day)) {
+            schedule.put(day, new TreeMap<>());
+        }
+        if (!schedule.get(day).containsKey(time)) {
+            schedule.get(day).put(time, new ArrayList<>());
+        }
+        schedule.get(day).get(time).add(trainingSession);
     }
 
     public List<TrainingSession> getTrainingSessionsForDay(DayOfWeek dayOfWeek) {
-        TreeMap<TimeOfDay, List<TrainingSession>> dayMap = schedule.get(dayOfWeek);
-        if (dayMap == null) {
+        if (dayOfWeek == null || !schedule.containsKey(dayOfWeek)) {
             return Collections.emptyList();
         }
         List<TrainingSession> result = new ArrayList<>();
-        for (List<TrainingSession> list : dayMap.values()) {
-            result.addAll(list);
+        for (List<TrainingSession> sessions : schedule.get(dayOfWeek).values()) {
+            result.addAll(sessions);
         }
         return result;
     }
 
     public List<TrainingSession> getTrainingSessionsForDayAndTime(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) {
-        TreeMap<TimeOfDay, List<TrainingSession>> dayMap = schedule.get(dayOfWeek);
-        if (dayMap == null) {
+        if (dayOfWeek == null || timeOfDay == null ||
+            !schedule.containsKey(dayOfWeek) ||
+            !schedule.get(dayOfWeek).containsKey(timeOfDay)) {
             return Collections.emptyList();
         }
-        List<TrainingSession> sessions = dayMap.get(timeOfDay);
-        return sessions != null ? Collections.unmodifiableList(sessions) : Collections.emptyList();
+        return new ArrayList<>(schedule.get(dayOfWeek).get(timeOfDay));
     }
 
-    public List<Map.Entry<Coach, Integer>> getCountByCoaches() {
-        Map<Coach, Integer> counter = new HashMap<>();
-        for (TreeMap<TimeOfDay, List<TrainingSession>> dayMap : schedule.values()) {
+    public Map<String, Integer> getCountByCoaches() {
+        Map<String, Integer> coachCount = new HashMap<>();
+
+        for (Map<TimeOfDay, List<TrainingSession>> dayMap : schedule.values()) {
             for (List<TrainingSession> sessions : dayMap.values()) {
-                for (TrainingSession ts : sessions) {
-                    Coach coach = ts.getCoach();
-                    counter.put(coach, counter.getOrDefault(coach, 0) + 1);
+                for (TrainingSession session : sessions) {
+                    Coach coach = session.getCoach();
+                    String fullName = coach.getSurname() + " " + coach.getName() + " " + coach.getMiddleName();
+                    coachCount.put(fullName, coachCount.getOrDefault(fullName, 0) + 1);
                 }
             }
         }
-        List<Map.Entry<Coach, Integer>> list = new ArrayList<>(counter.entrySet());
-        list.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
-        return list;
+
+        List<Map.Entry<String, Integer>> entries = new ArrayList<>(coachCount.entrySet());
+        entries.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
+
+        Map<String, Integer> sortedResult = new LinkedHashMap<>();
+        for (Map.Entry<String, Integer> entry : entries) {
+            sortedResult.put(entry.getKey(), entry.getValue());
+        }
+        return sortedResult;
     }
 }
