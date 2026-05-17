@@ -41,8 +41,8 @@ public class Timetable {
     }
 
     public List<TrainingSession> getTrainingSessionsForDayAndTime(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) {
-        if (dayOfWeek == null || timeOfDay == null || 
-            !schedule.containsKey(dayOfWeek) || 
+        if (dayOfWeek == null || timeOfDay == null ||
+            !schedule.containsKey(dayOfWeek) ||
             !schedule.get(dayOfWeek).containsKey(timeOfDay)) {
             return Collections.emptyList();
         }
@@ -51,7 +51,7 @@ public class Timetable {
 
     public Map<String, Integer> getCountByCoaches() {
         Map<String, Integer> coachCount = new HashMap<>();
-        
+
         for (Map<TimeOfDay, List<TrainingSession>> dayMap : schedule.values()) {
             for (List<TrainingSession> sessions : dayMap.values()) {
                 for (TrainingSession session : sessions) {
@@ -62,10 +62,10 @@ public class Timetable {
                 }
             }
         }
-        
+
         List<Map.Entry<String, Integer>> entries = new ArrayList<>(coachCount.entrySet());
         entries.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
-        
+
         Map<String, Integer> sortedResult = new LinkedHashMap<>();
         for (Map.Entry<String, Integer> entry : entries) {
             sortedResult.put(entry.getKey(), entry.getValue());
