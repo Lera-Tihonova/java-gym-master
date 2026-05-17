@@ -55,10 +55,9 @@ public class Timetable {
         for (Map<TimeOfDay, List<TrainingSession>> dayMap : schedule.values()) {
             for (List<TrainingSession> sessions : dayMap.values()) {
                 for (TrainingSession session : sessions) {
-                    if (session.getCoach() != null) {
-                        String coachName = session.getCoach().getSurname() + " " + session.getCoach().getName() + " " + session.getCoach().getMiddleName();
-                        coachCount.put(coachName, coachCount.getOrDefault(coachName, 0) + 1);
-                    }
+                    Coach coach = session.getCoach();
+                    String fullName = coach.getSurname() + " " + coach.getName() + " " + coach.getMiddleName();
+                    coachCount.put(fullName, coachCount.getOrDefault(fullName, 0) + 1);
                 }
             }
         }
