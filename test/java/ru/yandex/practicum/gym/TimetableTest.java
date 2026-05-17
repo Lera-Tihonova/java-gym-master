@@ -16,7 +16,8 @@ public class TimetableTest {
     void testAddAndGetTrainingSession() {
         Timetable timetable = new Timetable();
         Coach coach = new Coach("Иванов", "Иван", "Иванович");
-        TrainingSession session = new TrainingSession(DayOfWeek.MONDAY, morning, coach, groupA);
+        // Правильный порядок: Group, Coach, DayOfWeek, TimeOfDay
+        TrainingSession session = new TrainingSession(groupA, coach, DayOfWeek.MONDAY, morning);
 
         timetable.addNewTrainingSession(session);
         List<TrainingSession> sessions = timetable.getTrainingSessionsForDayAndTime(DayOfWeek.MONDAY, morning);
@@ -30,9 +31,9 @@ public class TimetableTest {
         Timetable timetable = new Timetable();
         Coach coach = new Coach("Петров", "Петр", "Петрович");
 
-        timetable.addNewTrainingSession(new TrainingSession(DayOfWeek.MONDAY, morning, coach, groupA));
-        timetable.addNewTrainingSession(new TrainingSession(DayOfWeek.MONDAY, evening, coach, groupB));
-        timetable.addNewTrainingSession(new TrainingSession(DayOfWeek.TUESDAY, morning, coach, groupC));
+        timetable.addNewTrainingSession(new TrainingSession(groupA, coach, DayOfWeek.MONDAY, morning));
+        timetable.addNewTrainingSession(new TrainingSession(groupB, coach, DayOfWeek.MONDAY, evening));
+        timetable.addNewTrainingSession(new TrainingSession(groupC, coach, DayOfWeek.TUESDAY, morning));
 
         List<TrainingSession> mondaySessions = timetable.getTrainingSessionsForDay(DayOfWeek.MONDAY);
 
@@ -47,8 +48,8 @@ public class TimetableTest {
         Coach coach1 = new Coach("Иванов", "Иван", "Иванович");
         Coach coach2 = new Coach("Петров", "Петр", "Петрович");
 
-        TrainingSession session1 = new TrainingSession(day, morning, coach1, groupA);
-        TrainingSession session2 = new TrainingSession(day, morning, coach2, groupB);
+        TrainingSession session1 = new TrainingSession(groupA, coach1, day, morning);
+        TrainingSession session2 = new TrainingSession(groupB, coach2, day, morning);
 
         timetable.addNewTrainingSession(session1);
         timetable.addNewTrainingSession(session2);
@@ -77,10 +78,10 @@ public class TimetableTest {
         Coach coach1 = new Coach("Сидорова", "Анна", "Ивановна");
         Coach coach2 = new Coach("Кузнецова", "Ольга", "Петровна");
 
-        timetable.addNewTrainingSession(new TrainingSession(DayOfWeek.MONDAY, morning, coach1, groupA));
-        timetable.addNewTrainingSession(new TrainingSession(DayOfWeek.TUESDAY, evening, coach1, groupB));
-        timetable.addNewTrainingSession(new TrainingSession(DayOfWeek.WEDNESDAY, morning, coach1, groupC));
-        timetable.addNewTrainingSession(new TrainingSession(DayOfWeek.MONDAY, evening, coach2, groupA));
+        timetable.addNewTrainingSession(new TrainingSession(groupA, coach1, DayOfWeek.MONDAY, morning));
+        timetable.addNewTrainingSession(new TrainingSession(groupB, coach1, DayOfWeek.TUESDAY, evening));
+        timetable.addNewTrainingSession(new TrainingSession(groupC, coach1, DayOfWeek.WEDNESDAY, morning));
+        timetable.addNewTrainingSession(new TrainingSession(groupA, coach2, DayOfWeek.MONDAY, evening));
 
         Map<String, Integer> result = timetable.getCountByCoaches();
 
